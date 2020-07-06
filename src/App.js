@@ -45,7 +45,10 @@ export default function AdsWizzTestForm() {
     setAge(10);
   };
 
-  const validateForm = () => {
+  const submitForm = (e) => {
+    e.preventDefault();
+    console.log(name, age, selectedDate);
+
     if (name !== undefined && name !== "") {
       if (isBirthDay) {
         if (moment(selectedDate).isValid()) {
@@ -63,7 +66,6 @@ export default function AdsWizzTestForm() {
         }
       }
     } else {
-      console.log(name);
       setIsError(true);
       setError("Invalid Name.");
     }
@@ -71,71 +73,83 @@ export default function AdsWizzTestForm() {
 
   return (
     <>
-      <TextField
-        id="name"
-        label="Name"
-        type="text"
-        value={name}
-        onChange={(nameEvent) => setName(nameEvent.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <br />
-      <FormControlLabel
-        control={
-          <Switch
-            size="small"
-            checked={isBirthDay}
-            onChange={(e) => setIsBirthDay(!isBirthDay)}
-            color="primary"
-          />
-        }
-        label={isBirthDay ? "Birthday" : "Age"}
-      />
-      <br />
-      {isBirthDay ? (
+      {
+        // The only way that I know onSubmit is better than onClick is that you can't use the keyboard. In react material ui you have refs that cycle with ALT so in theory you can submit your form with the keyboard as well.
+      }
+      <form onSubmit={submitForm} noValidate>
         <TextField
-          id="date"
-          label="Birthday"
-          type="date"
-          defaultValue="2017-05-24"
-          value={moment(selectedDate).format("YYYY-MM-DD")}
-          onChange={(date) =>
-            setSelectedDate(moment(date.target.value, "YYYY-MM-DD"))
+          id="name"
+          label="Name"
+          type="text"
+          value={name}
+          onChange={(nameEvent) => setName(nameEvent.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          required={true}
+          placeholder={"Name"}
+        />
+        <br />
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={isBirthDay}
+              onChange={(e) => setIsBirthDay(!isBirthDay)}
+              color="primary"
+            />
           }
-          InputLabelProps={{
-            shrink: true,
-          }}
+          label={isBirthDay ? "Birthday" : "Age"}
         />
-      ) : (
-        <TextField
-          id="age"
-          label="Age"
-          type="number"
-          value={age}
-          onChange={(number) => {
-            setAge(number.target.value);
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      )}
-      <br />
-      <br />
-      <Button color="primary" variant="contained" onClick={resetForm}>
-        Reset
-      </Button>
-      <Button color="primary" variant="contained" onClick={autoFill}>
-        AutoFill
-      </Button>
-      <br />
-      <br />
-      <Button color="primary" variant="contained" onClick={validateForm}>
-        Submit
-      </Button>
-
+        <br />
+        {isBirthDay ? (
+          <TextField
+            id="date"
+            label="Birthday"
+            type="date"
+            defaultValue="2017-05-24"
+            value={moment(selectedDate).format("YYYY-MM-DD")}
+            onChange={(date) =>
+              setSelectedDate(moment(date.target.value, "YYYY-MM-DD"))
+            }
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        ) : (
+          <TextField
+            id="age"
+            label="Age"
+            type="number"
+            value={age}
+            onChange={(number) => {
+              setAge(number.target.value);
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        )}
+        <br />
+        <br />
+        <Button color="primary" variant="contained" onClick={resetForm}>
+          Reset
+        </Button>
+        <Button color="primary" variant="contained" onClick={autoFill}>
+          AutoFill
+        </Button>
+        <br />
+        <br />
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={isModalOpen}
+          type="submit"
+          fullWidth
+        >
+          Submit
+        </Button>
+      </form>
       <Modal
         closeAfterTransition
         open={isModalOpen}
