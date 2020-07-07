@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // All imports are done like this vs destructuring the @material-ui/core
 // to reduce the bundle size even further
@@ -13,6 +13,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Paper from "@material-ui/core/Paper";
+import FormGroup from "@material-ui/core/FormGroup";
 
 import moment from "moment";
 import "moment/locale/ro";
@@ -44,6 +45,16 @@ export default function AdsWizzTestForm() {
     setSelectedDate(moment("01-04-2020", "DD-MM-YYYY").format("YYYY-MM-DD"));
     setAge(10);
   };
+
+  useEffect(() => {
+    const clickHandler = () => {
+      setIsBirthDay(!isBirthDay);
+    };
+
+    document.addEventListener("click", clickHandler);
+
+    return () => document.removeEventListener("click", clickHandler);
+  }, [isBirthDay]);
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -95,8 +106,9 @@ export default function AdsWizzTestForm() {
             <Switch
               size="small"
               checked={isBirthDay}
-              onChange={(e) => setIsBirthDay(!isBirthDay)}
+              // onChange={(e) => setIsBirthDay(!isBirthDay)}
               color="primary"
+              id="switch-id"
             />
           }
           label={isBirthDay ? "Birthday" : "Age"}
